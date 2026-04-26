@@ -1,0 +1,1131 @@
+{
+  "info": {
+    "_postman_id": "d53e7c1b-c77b-4dab-9545-3eaab8198a2e",
+    "name": "Transaction Explorer API v1.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53144030",
+    "_collection_link": "https://go.postman.co/collection/53144030-d53e7c1b-c77b-4dab-9545-3eaab8198a2e?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Core Exploration (Requirement 4.2 & 5.1)",
+      "item": [
+        {
+          "name": "Get Node Details (Default)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// 1. Check if the server responded successfully\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// 2. Validate that it's a Root Node\r",
+                  "pm.test(\"Node is correctly identified as Root\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.level).to.eql(0);\r",
+                  "    pm.expect(jsonData.root).to.be.true;\r",
+                  "    pm.expect(jsonData.parentChain).to.have.lengthOf(0);\r",
+                  "});\r",
+                  "\r",
+                  "// 3. Ensure transactions are being aggregated\r",
+                  "pm.test(\"Next level transactions are present\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.nextLevelTransactions).to.be.an('array');\r",
+                  "    pm.expect(jsonData.nextLevelTransactions.length).to.be.above(0);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/graph/nodes/N1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "graph",
+                "nodes",
+                "N1"
+              ]
+            },
+            "description": "# **Verifies basic node info, Level 0 logic, parentChain, and direct children.**"
+          },
+          "response": [
+            {
+              "name": "Root Node",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/graph/nodes/N1",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "graph",
+                    "nodes",
+                    "N1"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 21 Apr 2026 06:59:59 GMT"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"id\": \"N1\",\n    \"name\": \"Node 1\",\n    \"accountNumber\": \"ACC1001\",\n    \"level\": 0,\n    \"parentChain\": [],\n    \"directChildren\": [\n        {\n            \"id\": \"N2\",\n            \"parentId\": \"N1\",\n            \"name\": \"Node 2\",\n            \"accountNumber\": \"ACC1002\",\n            \"transactions\": [\n                {\n                    \"txnId\": \"T6\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1300,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T15:00:00Z\",\n                    \"description\": \"POS transaction T6 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T7\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1350,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T16:00:00Z\",\n                    \"description\": \"ATM transaction T7 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T8\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"SALARY\",\n                    \"amount\": 1400,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T17:00:00Z\",\n                    \"description\": \"SALARY transaction T8 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T9\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"TRANSFER\",\n                    \"amount\": 1450,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T18:00:00Z\",\n                    \"description\": \"TRANSFER transaction T9 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T10\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1500,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T19:00:00Z\",\n                    \"description\": \"POS transaction T10 on ACC1002\"\n                }\n            ]\n        },\n        {\n            \"id\": \"N3\",\n            \"parentId\": \"N1\",\n            \"name\": \"Node 3\",\n            \"accountNumber\": \"ACC1003\",\n            \"transactions\": [\n                {\n                    \"txnId\": \"T11\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1550,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T20:00:00Z\",\n                    \"description\": \"ATM transaction T11 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T12\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"SALARY\",\n                    \"amount\": 1600,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T21:00:00Z\",\n                    \"description\": \"SALARY transaction T12 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T13\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"TRANSFER\",\n                    \"amount\": 1650,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T22:00:00Z\",\n                    \"description\": \"TRANSFER transaction T13 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T14\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1700,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T23:00:00Z\",\n                    \"description\": \"POS transaction T14 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T15\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1750,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-02T00:00:00Z\",\n                    \"description\": \"ATM transaction T15 on ACC1003\"\n                }\n            ]\n        }\n    ],\n    \"transactions\": [\n        {\n            \"txnId\": \"T1\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"TRANSFER\",\n            \"amount\": 1050,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T10:00:00Z\",\n            \"description\": \"TRANSFER transaction T1 on ACC1001\"\n        },\n        {\n            \"txnId\": \"T2\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"POS\",\n            \"amount\": 1100,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T11:00:00Z\",\n            \"description\": \"POS transaction T2 on ACC1001\"\n        },\n        {\n            \"txnId\": \"T3\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"ATM\",\n            \"amount\": 1150,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T12:00:00Z\",\n            \"description\": \"ATM transaction T3 on ACC1001\"\n        },\n        {\n            \"txnId\": \"T4\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"SALARY\",\n            \"amount\": 1200,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T13:00:00Z\",\n            \"description\": \"SALARY transaction T4 on ACC1001\"\n        },\n        {\n            \"txnId\": \"T5\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"TRANSFER\",\n            \"amount\": 1250,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T14:00:00Z\",\n            \"description\": \"TRANSFER transaction T5 on ACC1001\"\n        }\n    ],\n    \"nextLevelTransactions\": [\n        {\n            \"txnId\": \"T6\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"POS\",\n            \"amount\": 1300,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T15:00:00Z\",\n            \"description\": \"POS transaction T6 on ACC1002\"\n        },\n        {\n            \"txnId\": \"T7\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"ATM\",\n            \"amount\": 1350,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T16:00:00Z\",\n            \"description\": \"ATM transaction T7 on ACC1002\"\n        },\n        {\n            \"txnId\": \"T8\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"SALARY\",\n            \"amount\": 1400,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T17:00:00Z\",\n            \"description\": \"SALARY transaction T8 on ACC1002\"\n        },\n        {\n            \"txnId\": \"T9\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"TRANSFER\",\n            \"amount\": 1450,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T18:00:00Z\",\n            \"description\": \"TRANSFER transaction T9 on ACC1002\"\n        },\n        {\n            \"txnId\": \"T10\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"POS\",\n            \"amount\": 1500,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T19:00:00Z\",\n            \"description\": \"POS transaction T10 on ACC1002\"\n        },\n        {\n            \"txnId\": \"T11\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"ATM\",\n            \"amount\": 1550,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T20:00:00Z\",\n            \"description\": \"ATM transaction T11 on ACC1003\"\n        },\n        {\n            \"txnId\": \"T12\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"SALARY\",\n            \"amount\": 1600,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T21:00:00Z\",\n            \"description\": \"SALARY transaction T12 on ACC1003\"\n        },\n        {\n            \"txnId\": \"T13\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"TRANSFER\",\n            \"amount\": 1650,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T22:00:00Z\",\n            \"description\": \"TRANSFER transaction T13 on ACC1003\"\n        },\n        {\n            \"txnId\": \"T14\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"POS\",\n            \"amount\": 1700,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T23:00:00Z\",\n            \"description\": \"POS transaction T14 on ACC1003\"\n        },\n        {\n            \"txnId\": \"T15\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"ATM\",\n            \"amount\": 1750,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-02T00:00:00Z\",\n            \"description\": \"ATM transaction T15 on ACC1003\"\n        }\n    ],\n    \"children\": [\n        {\n            \"id\": \"N2\",\n            \"name\": \"Node 2\",\n            \"accountNumber\": \"ACC1002\",\n            \"level\": 0,\n            \"transactions\": [\n                {\n                    \"txnId\": \"T6\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1300,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T15:00:00Z\",\n                    \"description\": \"POS transaction T6 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T7\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1350,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T16:00:00Z\",\n                    \"description\": \"ATM transaction T7 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T8\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"SALARY\",\n                    \"amount\": 1400,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T17:00:00Z\",\n                    \"description\": \"SALARY transaction T8 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T9\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"TRANSFER\",\n                    \"amount\": 1450,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T18:00:00Z\",\n                    \"description\": \"TRANSFER transaction T9 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T10\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1500,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T19:00:00Z\",\n                    \"description\": \"POS transaction T10 on ACC1002\"\n                }\n            ],\n            \"children\": [],\n            \"root\": false,\n            \"leaf\": false\n        },\n        {\n            \"id\": \"N3\",\n            \"name\": \"Node 3\",\n            \"accountNumber\": \"ACC1003\",\n            \"level\": 0,\n            \"transactions\": [\n                {\n                    \"txnId\": \"T11\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1550,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T20:00:00Z\",\n                    \"description\": \"ATM transaction T11 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T12\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"SALARY\",\n                    \"amount\": 1600,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T21:00:00Z\",\n                    \"description\": \"SALARY transaction T12 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T13\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"TRANSFER\",\n                    \"amount\": 1650,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T22:00:00Z\",\n                    \"description\": \"TRANSFER transaction T13 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T14\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1700,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T23:00:00Z\",\n                    \"description\": \"POS transaction T14 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T15\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1750,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-02T00:00:00Z\",\n                    \"description\": \"ATM transaction T15 on ACC1003\"\n                }\n            ],\n            \"children\": [],\n            \"root\": false,\n            \"leaf\": false\n        }\n    ],\n    \"root\": true,\n    \"leaf\": false\n}"
+            },
+            {
+              "name": "Leaf Node",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/graph/nodes/N8",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "graph",
+                    "nodes",
+                    "N8"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 21 Apr 2026 08:58:41 GMT"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"id\": \"N8\",\n    \"parentId\": \"N4\",\n    \"name\": \"Node 8\",\n    \"accountNumber\": \"ACC1008\",\n    \"level\": 3,\n    \"parentChain\": [\n        {\n            \"id\": \"N1\",\n            \"name\": \"Node 1\",\n            \"accountNumber\": \"ACC1001\",\n            \"transactions\": [\n                {\n                    \"txnId\": \"T1\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"TRANSFER\",\n                    \"amount\": 1050,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T10:00:00Z\",\n                    \"description\": \"TRANSFER transaction T1 on ACC1001\"\n                },\n                {\n                    \"txnId\": \"T2\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1100,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T11:00:00Z\",\n                    \"description\": \"POS transaction T2 on ACC1001\"\n                },\n                {\n                    \"txnId\": \"T3\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1150,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T12:00:00Z\",\n                    \"description\": \"ATM transaction T3 on ACC1001\"\n                },\n                {\n                    \"txnId\": \"T4\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"SALARY\",\n                    \"amount\": 1200,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T13:00:00Z\",\n                    \"description\": \"SALARY transaction T4 on ACC1001\"\n                },\n                {\n                    \"txnId\": \"T5\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"TRANSFER\",\n                    \"amount\": 1250,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T14:00:00Z\",\n                    \"description\": \"TRANSFER transaction T5 on ACC1001\"\n                }\n            ]\n        },\n        {\n            \"id\": \"N2\",\n            \"parentId\": \"N1\",\n            \"name\": \"Node 2\",\n            \"accountNumber\": \"ACC1002\",\n            \"transactions\": [\n                {\n                    \"txnId\": \"T6\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1300,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T15:00:00Z\",\n                    \"description\": \"POS transaction T6 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T7\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1350,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T16:00:00Z\",\n                    \"description\": \"ATM transaction T7 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T8\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"SALARY\",\n                    \"amount\": 1400,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T17:00:00Z\",\n                    \"description\": \"SALARY transaction T8 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T9\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"TRANSFER\",\n                    \"amount\": 1450,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T18:00:00Z\",\n                    \"description\": \"TRANSFER transaction T9 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T10\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1500,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T19:00:00Z\",\n                    \"description\": \"POS transaction T10 on ACC1002\"\n                }\n            ]\n        },\n        {\n            \"id\": \"N4\",\n            \"parentId\": \"N2\",\n            \"name\": \"Node 4\",\n            \"accountNumber\": \"ACC1004\",\n            \"transactions\": [\n                {\n                    \"txnId\": \"T16\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"SALARY\",\n                    \"amount\": 1800,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-02T01:00:00Z\",\n                    \"description\": \"SALARY transaction T16 on ACC1004\"\n                },\n                {\n                    \"txnId\": \"T17\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"TRANSFER\",\n                    \"amount\": 1850,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-02T02:00:00Z\",\n                    \"description\": \"TRANSFER transaction T17 on ACC1004\"\n                },\n                {\n                    \"txnId\": \"T18\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1900,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-02T03:00:00Z\",\n                    \"description\": \"POS transaction T18 on ACC1004\"\n                },\n                {\n                    \"txnId\": \"T19\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1950,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-02T04:00:00Z\",\n                    \"description\": \"ATM transaction T19 on ACC1004\"\n                },\n                {\n                    \"txnId\": \"T20\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"SALARY\",\n                    \"amount\": 2000,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-02T05:00:00Z\",\n                    \"description\": \"SALARY transaction T20 on ACC1004\"\n                }\n            ]\n        }\n    ],\n    \"directChildren\": [],\n    \"transactions\": [\n        {\n            \"txnId\": \"T36\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"SALARY\",\n            \"amount\": 2800,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-02T21:00:00Z\",\n            \"description\": \"SALARY transaction T36 on ACC1008\"\n        },\n        {\n            \"txnId\": \"T37\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"TRANSFER\",\n            \"amount\": 2850,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-02T22:00:00Z\",\n            \"description\": \"TRANSFER transaction T37 on ACC1008\"\n        },\n        {\n            \"txnId\": \"T38\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"POS\",\n            \"amount\": 2900,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-02T23:00:00Z\",\n            \"description\": \"POS transaction T38 on ACC1008\"\n        },\n        {\n            \"txnId\": \"T39\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"ATM\",\n            \"amount\": 2950,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-03T00:00:00Z\",\n            \"description\": \"ATM transaction T39 on ACC1008\"\n        },\n        {\n            \"txnId\": \"T40\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"SALARY\",\n            \"amount\": 3000,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-03T01:00:00Z\",\n            \"description\": \"SALARY transaction T40 on ACC1008\"\n        }\n    ],\n    \"nextLevelTransactions\": [],\n    \"children\": [],\n    \"root\": false,\n    \"leaf\": true\n}"
+            },
+            {
+              "name": "Orphan Node",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/graph/nodes/N1",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "graph",
+                    "nodes",
+                    "N1"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 21 Apr 2026 08:34:30 GMT"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"id\": \"N1\",\n    \"name\": \"Node 1\",\n    \"accountNumber\": \"ACC1001\",\n    \"level\": 0,\n    \"parentChain\": [],\n    \"directChildren\": [\n        {\n            \"id\": \"N2\",\n            \"parentId\": \"N1\",\n            \"name\": \"Node 2\",\n            \"accountNumber\": \"ACC1002\",\n            \"transactions\": [\n                {\n                    \"txnId\": \"T6\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1300,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T15:00:00Z\",\n                    \"description\": \"POS transaction T6 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T7\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1350,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T16:00:00Z\",\n                    \"description\": \"ATM transaction T7 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T8\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"SALARY\",\n                    \"amount\": 1400,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T17:00:00Z\",\n                    \"description\": \"SALARY transaction T8 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T9\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"TRANSFER\",\n                    \"amount\": 1450,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T18:00:00Z\",\n                    \"description\": \"TRANSFER transaction T9 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T10\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1500,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T19:00:00Z\",\n                    \"description\": \"POS transaction T10 on ACC1002\"\n                }\n            ]\n        },\n        {\n            \"id\": \"N3\",\n            \"parentId\": \"N1\",\n            \"name\": \"Node 3\",\n            \"accountNumber\": \"ACC1003\",\n            \"transactions\": [\n                {\n                    \"txnId\": \"T11\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1550,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T20:00:00Z\",\n                    \"description\": \"ATM transaction T11 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T12\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"SALARY\",\n                    \"amount\": 1600,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T21:00:00Z\",\n                    \"description\": \"SALARY transaction T12 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T13\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"TRANSFER\",\n                    \"amount\": 1650,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T22:00:00Z\",\n                    \"description\": \"TRANSFER transaction T13 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T14\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1700,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T23:00:00Z\",\n                    \"description\": \"POS transaction T14 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T15\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1750,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-02T00:00:00Z\",\n                    \"description\": \"ATM transaction T15 on ACC1003\"\n                }\n            ]\n        }\n    ],\n    \"transactions\": [\n        {\n            \"txnId\": \"T1\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"TRANSFER\",\n            \"amount\": 1050,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T10:00:00Z\",\n            \"description\": \"TRANSFER transaction T1 on ACC1001\"\n        },\n        {\n            \"txnId\": \"T2\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"POS\",\n            \"amount\": 1100,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T11:00:00Z\",\n            \"description\": \"POS transaction T2 on ACC1001\"\n        },\n        {\n            \"txnId\": \"T3\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"ATM\",\n            \"amount\": 1150,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T12:00:00Z\",\n            \"description\": \"ATM transaction T3 on ACC1001\"\n        },\n        {\n            \"txnId\": \"T4\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"SALARY\",\n            \"amount\": 1200,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T13:00:00Z\",\n            \"description\": \"SALARY transaction T4 on ACC1001\"\n        },\n        {\n            \"txnId\": \"T5\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"TRANSFER\",\n            \"amount\": 1250,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T14:00:00Z\",\n            \"description\": \"TRANSFER transaction T5 on ACC1001\"\n        }\n    ],\n    \"nextLevelTransactions\": [\n        {\n            \"txnId\": \"T6\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"POS\",\n            \"amount\": 1300,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T15:00:00Z\",\n            \"description\": \"POS transaction T6 on ACC1002\"\n        },\n        {\n            \"txnId\": \"T7\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"ATM\",\n            \"amount\": 1350,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T16:00:00Z\",\n            \"description\": \"ATM transaction T7 on ACC1002\"\n        },\n        {\n            \"txnId\": \"T8\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"SALARY\",\n            \"amount\": 1400,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T17:00:00Z\",\n            \"description\": \"SALARY transaction T8 on ACC1002\"\n        },\n        {\n            \"txnId\": \"T9\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"TRANSFER\",\n            \"amount\": 1450,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T18:00:00Z\",\n            \"description\": \"TRANSFER transaction T9 on ACC1002\"\n        },\n        {\n            \"txnId\": \"T10\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"POS\",\n            \"amount\": 1500,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T19:00:00Z\",\n            \"description\": \"POS transaction T10 on ACC1002\"\n        },\n        {\n            \"txnId\": \"T11\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"ATM\",\n            \"amount\": 1550,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T20:00:00Z\",\n            \"description\": \"ATM transaction T11 on ACC1003\"\n        },\n        {\n            \"txnId\": \"T12\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"SALARY\",\n            \"amount\": 1600,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T21:00:00Z\",\n            \"description\": \"SALARY transaction T12 on ACC1003\"\n        },\n        {\n            \"txnId\": \"T13\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"TRANSFER\",\n            \"amount\": 1650,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T22:00:00Z\",\n            \"description\": \"TRANSFER transaction T13 on ACC1003\"\n        },\n        {\n            \"txnId\": \"T14\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"POS\",\n            \"amount\": 1700,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T23:00:00Z\",\n            \"description\": \"POS transaction T14 on ACC1003\"\n        },\n        {\n            \"txnId\": \"T15\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"ATM\",\n            \"amount\": 1750,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-02T00:00:00Z\",\n            \"description\": \"ATM transaction T15 on ACC1003\"\n        }\n    ],\n    \"children\": [\n        {\n            \"id\": \"N2\",\n            \"name\": \"Node 2\",\n            \"accountNumber\": \"ACC1002\",\n            \"level\": 1,\n            \"transactions\": [\n                {\n                    \"txnId\": \"T6\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1300,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T15:00:00Z\",\n                    \"description\": \"POS transaction T6 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T7\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1350,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T16:00:00Z\",\n                    \"description\": \"ATM transaction T7 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T8\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"SALARY\",\n                    \"amount\": 1400,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T17:00:00Z\",\n                    \"description\": \"SALARY transaction T8 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T9\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"TRANSFER\",\n                    \"amount\": 1450,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T18:00:00Z\",\n                    \"description\": \"TRANSFER transaction T9 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T10\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1500,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T19:00:00Z\",\n                    \"description\": \"POS transaction T10 on ACC1002\"\n                }\n            ],\n            \"children\": [],\n            \"root\": false,\n            \"leaf\": false\n        },\n        {\n            \"id\": \"N3\",\n            \"name\": \"Node 3\",\n            \"accountNumber\": \"ACC1003\",\n            \"level\": 1,\n            \"transactions\": [\n                {\n                    \"txnId\": \"T11\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1550,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T20:00:00Z\",\n                    \"description\": \"ATM transaction T11 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T12\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"SALARY\",\n                    \"amount\": 1600,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T21:00:00Z\",\n                    \"description\": \"SALARY transaction T12 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T13\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"TRANSFER\",\n                    \"amount\": 1650,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T22:00:00Z\",\n                    \"description\": \"TRANSFER transaction T13 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T14\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1700,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T23:00:00Z\",\n                    \"description\": \"POS transaction T14 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T15\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1750,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-02T00:00:00Z\",\n                    \"description\": \"ATM transaction T15 on ACC1003\"\n                }\n            ],\n            \"children\": [],\n            \"root\": false,\n            \"leaf\": false\n        }\n    ],\n    \"root\": true,\n    \"leaf\": false\n}"
+            }
+          ]
+        },
+        {
+          "name": "Recursive Discovery (Depth 3)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is valid JSON\", function () {\r",
+                  "    pm.response.to.be.withBody;\r",
+                  "    pm.response.to.be.json;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/graph/nodes/N1?maxDepth=3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "graph",
+                "nodes",
+                "N1"
+              ],
+              "query": [
+                {
+                  "key": "maxDepth",
+                  "value": "3"
+                }
+              ]
+            },
+            "description": "StartFragmentTests the Bonus 5.1 recursive tree building.EndFragment"
+          },
+          "response": [
+            {
+              "name": "Invalid Depth",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/graph/nodes/N1?maxDepth=6",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "graph",
+                    "nodes",
+                    "N1"
+                  ],
+                  "query": [
+                    {
+                      "key": "maxDepth",
+                      "value": "6"
+                    }
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 21 Apr 2026 09:55:01 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"timestamp\": \"2026-04-21T15:25:01.4294787\",\n    \"status\": 400,\n    \"error\": \"INVALID_ARGUMENT\",\n    \"message\": \"maxDepth must be between 0 and 5.\"\n}"
+            },
+            {
+              "name": "Node Depth Wise",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/graph/nodes/N1?maxDepth=3",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "graph",
+                    "nodes",
+                    "N1"
+                  ],
+                  "query": [
+                    {
+                      "key": "maxDepth",
+                      "value": "3"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 21 Apr 2026 09:44:26 GMT"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"id\": \"N1\",\n    \"name\": \"Node 1\",\n    \"accountNumber\": \"ACC1001\",\n    \"level\": 0,\n    \"parentChain\": [],\n    \"directChildren\": [\n        {\n            \"id\": \"N2\",\n            \"parentId\": \"N1\",\n            \"name\": \"Node 2\",\n            \"accountNumber\": \"ACC1002\",\n            \"transactions\": [\n                {\n                    \"txnId\": \"T6\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1300,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T15:00:00Z\",\n                    \"description\": \"POS transaction T6 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T7\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1350,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T16:00:00Z\",\n                    \"description\": \"ATM transaction T7 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T8\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"SALARY\",\n                    \"amount\": 1400,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T17:00:00Z\",\n                    \"description\": \"SALARY transaction T8 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T9\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"TRANSFER\",\n                    \"amount\": 1450,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T18:00:00Z\",\n                    \"description\": \"TRANSFER transaction T9 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T10\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1500,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T19:00:00Z\",\n                    \"description\": \"POS transaction T10 on ACC1002\"\n                }\n            ]\n        },\n        {\n            \"id\": \"N3\",\n            \"parentId\": \"N1\",\n            \"name\": \"Node 3\",\n            \"accountNumber\": \"ACC1003\",\n            \"transactions\": [\n                {\n                    \"txnId\": \"T11\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1550,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T20:00:00Z\",\n                    \"description\": \"ATM transaction T11 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T12\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"SALARY\",\n                    \"amount\": 1600,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T21:00:00Z\",\n                    \"description\": \"SALARY transaction T12 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T13\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"TRANSFER\",\n                    \"amount\": 1650,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T22:00:00Z\",\n                    \"description\": \"TRANSFER transaction T13 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T14\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1700,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T23:00:00Z\",\n                    \"description\": \"POS transaction T14 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T15\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1750,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-02T00:00:00Z\",\n                    \"description\": \"ATM transaction T15 on ACC1003\"\n                }\n            ]\n        }\n    ],\n    \"transactions\": [\n        {\n            \"txnId\": \"T1\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"TRANSFER\",\n            \"amount\": 1050,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T10:00:00Z\",\n            \"description\": \"TRANSFER transaction T1 on ACC1001\"\n        },\n        {\n            \"txnId\": \"T2\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"POS\",\n            \"amount\": 1100,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T11:00:00Z\",\n            \"description\": \"POS transaction T2 on ACC1001\"\n        },\n        {\n            \"txnId\": \"T3\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"ATM\",\n            \"amount\": 1150,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T12:00:00Z\",\n            \"description\": \"ATM transaction T3 on ACC1001\"\n        },\n        {\n            \"txnId\": \"T4\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"SALARY\",\n            \"amount\": 1200,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T13:00:00Z\",\n            \"description\": \"SALARY transaction T4 on ACC1001\"\n        },\n        {\n            \"txnId\": \"T5\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"TRANSFER\",\n            \"amount\": 1250,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T14:00:00Z\",\n            \"description\": \"TRANSFER transaction T5 on ACC1001\"\n        }\n    ],\n    \"nextLevelTransactions\": [\n        {\n            \"txnId\": \"T6\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"POS\",\n            \"amount\": 1300,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T15:00:00Z\",\n            \"description\": \"POS transaction T6 on ACC1002\"\n        },\n        {\n            \"txnId\": \"T7\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"ATM\",\n            \"amount\": 1350,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T16:00:00Z\",\n            \"description\": \"ATM transaction T7 on ACC1002\"\n        },\n        {\n            \"txnId\": \"T8\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"SALARY\",\n            \"amount\": 1400,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T17:00:00Z\",\n            \"description\": \"SALARY transaction T8 on ACC1002\"\n        },\n        {\n            \"txnId\": \"T9\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"TRANSFER\",\n            \"amount\": 1450,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T18:00:00Z\",\n            \"description\": \"TRANSFER transaction T9 on ACC1002\"\n        },\n        {\n            \"txnId\": \"T10\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"POS\",\n            \"amount\": 1500,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T19:00:00Z\",\n            \"description\": \"POS transaction T10 on ACC1002\"\n        },\n        {\n            \"txnId\": \"T11\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"ATM\",\n            \"amount\": 1550,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T20:00:00Z\",\n            \"description\": \"ATM transaction T11 on ACC1003\"\n        },\n        {\n            \"txnId\": \"T12\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"SALARY\",\n            \"amount\": 1600,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T21:00:00Z\",\n            \"description\": \"SALARY transaction T12 on ACC1003\"\n        },\n        {\n            \"txnId\": \"T13\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"TRANSFER\",\n            \"amount\": 1650,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T22:00:00Z\",\n            \"description\": \"TRANSFER transaction T13 on ACC1003\"\n        },\n        {\n            \"txnId\": \"T14\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"POS\",\n            \"amount\": 1700,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-01T23:00:00Z\",\n            \"description\": \"POS transaction T14 on ACC1003\"\n        },\n        {\n            \"txnId\": \"T15\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"ATM\",\n            \"amount\": 1750,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-02T00:00:00Z\",\n            \"description\": \"ATM transaction T15 on ACC1003\"\n        }\n    ],\n    \"children\": [\n        {\n            \"id\": \"N2\",\n            \"name\": \"Node 2\",\n            \"accountNumber\": \"ACC1002\",\n            \"level\": 1,\n            \"transactions\": [\n                {\n                    \"txnId\": \"T6\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1300,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T15:00:00Z\",\n                    \"description\": \"POS transaction T6 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T7\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1350,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T16:00:00Z\",\n                    \"description\": \"ATM transaction T7 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T8\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"SALARY\",\n                    \"amount\": 1400,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T17:00:00Z\",\n                    \"description\": \"SALARY transaction T8 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T9\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"TRANSFER\",\n                    \"amount\": 1450,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T18:00:00Z\",\n                    \"description\": \"TRANSFER transaction T9 on ACC1002\"\n                },\n                {\n                    \"txnId\": \"T10\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1500,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T19:00:00Z\",\n                    \"description\": \"POS transaction T10 on ACC1002\"\n                }\n            ],\n            \"children\": [\n                {\n                    \"id\": \"N4\",\n                    \"name\": \"Node 4\",\n                    \"accountNumber\": \"ACC1004\",\n                    \"level\": 2,\n                    \"transactions\": [\n                        {\n                            \"txnId\": \"T16\",\n                            \"direction\": \"DEBIT\",\n                            \"txnType\": \"SALARY\",\n                            \"amount\": 1800,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T01:00:00Z\",\n                            \"description\": \"SALARY transaction T16 on ACC1004\"\n                        },\n                        {\n                            \"txnId\": \"T17\",\n                            \"direction\": \"CREDIT\",\n                            \"txnType\": \"TRANSFER\",\n                            \"amount\": 1850,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T02:00:00Z\",\n                            \"description\": \"TRANSFER transaction T17 on ACC1004\"\n                        },\n                        {\n                            \"txnId\": \"T18\",\n                            \"direction\": \"DEBIT\",\n                            \"txnType\": \"POS\",\n                            \"amount\": 1900,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T03:00:00Z\",\n                            \"description\": \"POS transaction T18 on ACC1004\"\n                        },\n                        {\n                            \"txnId\": \"T19\",\n                            \"direction\": \"CREDIT\",\n                            \"txnType\": \"ATM\",\n                            \"amount\": 1950,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T04:00:00Z\",\n                            \"description\": \"ATM transaction T19 on ACC1004\"\n                        },\n                        {\n                            \"txnId\": \"T20\",\n                            \"direction\": \"DEBIT\",\n                            \"txnType\": \"SALARY\",\n                            \"amount\": 2000,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T05:00:00Z\",\n                            \"description\": \"SALARY transaction T20 on ACC1004\"\n                        }\n                    ],\n                    \"children\": [\n                        {\n                            \"id\": \"N8\",\n                            \"name\": \"Node 8\",\n                            \"accountNumber\": \"ACC1008\",\n                            \"level\": 3,\n                            \"transactions\": [\n                                {\n                                    \"txnId\": \"T36\",\n                                    \"direction\": \"DEBIT\",\n                                    \"txnType\": \"SALARY\",\n                                    \"amount\": 2800,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-02T21:00:00Z\",\n                                    \"description\": \"SALARY transaction T36 on ACC1008\"\n                                },\n                                {\n                                    \"txnId\": \"T37\",\n                                    \"direction\": \"CREDIT\",\n                                    \"txnType\": \"TRANSFER\",\n                                    \"amount\": 2850,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-02T22:00:00Z\",\n                                    \"description\": \"TRANSFER transaction T37 on ACC1008\"\n                                },\n                                {\n                                    \"txnId\": \"T38\",\n                                    \"direction\": \"DEBIT\",\n                                    \"txnType\": \"POS\",\n                                    \"amount\": 2900,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-02T23:00:00Z\",\n                                    \"description\": \"POS transaction T38 on ACC1008\"\n                                },\n                                {\n                                    \"txnId\": \"T39\",\n                                    \"direction\": \"CREDIT\",\n                                    \"txnType\": \"ATM\",\n                                    \"amount\": 2950,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T00:00:00Z\",\n                                    \"description\": \"ATM transaction T39 on ACC1008\"\n                                },\n                                {\n                                    \"txnId\": \"T40\",\n                                    \"direction\": \"DEBIT\",\n                                    \"txnType\": \"SALARY\",\n                                    \"amount\": 3000,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T01:00:00Z\",\n                                    \"description\": \"SALARY transaction T40 on ACC1008\"\n                                }\n                            ],\n                            \"children\": [],\n                            \"root\": false,\n                            \"leaf\": true\n                        },\n                        {\n                            \"id\": \"N9\",\n                            \"name\": \"Node 9\",\n                            \"accountNumber\": \"ACC1009\",\n                            \"level\": 3,\n                            \"transactions\": [\n                                {\n                                    \"txnId\": \"T41\",\n                                    \"direction\": \"CREDIT\",\n                                    \"txnType\": \"TRANSFER\",\n                                    \"amount\": 3050,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T02:00:00Z\",\n                                    \"description\": \"TRANSFER transaction T41 on ACC1009\"\n                                },\n                                {\n                                    \"txnId\": \"T42\",\n                                    \"direction\": \"DEBIT\",\n                                    \"txnType\": \"POS\",\n                                    \"amount\": 3100,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T03:00:00Z\",\n                                    \"description\": \"POS transaction T42 on ACC1009\"\n                                },\n                                {\n                                    \"txnId\": \"T43\",\n                                    \"direction\": \"CREDIT\",\n                                    \"txnType\": \"ATM\",\n                                    \"amount\": 3150,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T04:00:00Z\",\n                                    \"description\": \"ATM transaction T43 on ACC1009\"\n                                },\n                                {\n                                    \"txnId\": \"T44\",\n                                    \"direction\": \"DEBIT\",\n                                    \"txnType\": \"SALARY\",\n                                    \"amount\": 3200,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T05:00:00Z\",\n                                    \"description\": \"SALARY transaction T44 on ACC1009\"\n                                },\n                                {\n                                    \"txnId\": \"T45\",\n                                    \"direction\": \"CREDIT\",\n                                    \"txnType\": \"TRANSFER\",\n                                    \"amount\": 3250,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T06:00:00Z\",\n                                    \"description\": \"TRANSFER transaction T45 on ACC1009\"\n                                }\n                            ],\n                            \"children\": [],\n                            \"root\": false,\n                            \"leaf\": true\n                        }\n                    ],\n                    \"root\": false,\n                    \"leaf\": false\n                },\n                {\n                    \"id\": \"N5\",\n                    \"name\": \"Node 5\",\n                    \"accountNumber\": \"ACC1005\",\n                    \"level\": 2,\n                    \"transactions\": [\n                        {\n                            \"txnId\": \"T21\",\n                            \"direction\": \"CREDIT\",\n                            \"txnType\": \"TRANSFER\",\n                            \"amount\": 2050,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T06:00:00Z\",\n                            \"description\": \"TRANSFER transaction T21 on ACC1005\"\n                        },\n                        {\n                            \"txnId\": \"T22\",\n                            \"direction\": \"DEBIT\",\n                            \"txnType\": \"POS\",\n                            \"amount\": 2100,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T07:00:00Z\",\n                            \"description\": \"POS transaction T22 on ACC1005\"\n                        },\n                        {\n                            \"txnId\": \"T23\",\n                            \"direction\": \"CREDIT\",\n                            \"txnType\": \"ATM\",\n                            \"amount\": 2150,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T08:00:00Z\",\n                            \"description\": \"ATM transaction T23 on ACC1005\"\n                        },\n                        {\n                            \"txnId\": \"T24\",\n                            \"direction\": \"DEBIT\",\n                            \"txnType\": \"SALARY\",\n                            \"amount\": 2200,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T09:00:00Z\",\n                            \"description\": \"SALARY transaction T24 on ACC1005\"\n                        },\n                        {\n                            \"txnId\": \"T25\",\n                            \"direction\": \"CREDIT\",\n                            \"txnType\": \"TRANSFER\",\n                            \"amount\": 2250,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T10:00:00Z\",\n                            \"description\": \"TRANSFER transaction T25 on ACC1005\"\n                        }\n                    ],\n                    \"children\": [\n                        {\n                            \"id\": \"N10\",\n                            \"name\": \"Node 10\",\n                            \"accountNumber\": \"ACC1010\",\n                            \"level\": 3,\n                            \"transactions\": [\n                                {\n                                    \"txnId\": \"T46\",\n                                    \"direction\": \"DEBIT\",\n                                    \"txnType\": \"POS\",\n                                    \"amount\": 3300,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T07:00:00Z\",\n                                    \"description\": \"POS transaction T46 on ACC1010\"\n                                },\n                                {\n                                    \"txnId\": \"T47\",\n                                    \"direction\": \"CREDIT\",\n                                    \"txnType\": \"ATM\",\n                                    \"amount\": 3350,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T08:00:00Z\",\n                                    \"description\": \"ATM transaction T47 on ACC1010\"\n                                },\n                                {\n                                    \"txnId\": \"T48\",\n                                    \"direction\": \"DEBIT\",\n                                    \"txnType\": \"SALARY\",\n                                    \"amount\": 3400,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T09:00:00Z\",\n                                    \"description\": \"SALARY transaction T48 on ACC1010\"\n                                },\n                                {\n                                    \"txnId\": \"T49\",\n                                    \"direction\": \"CREDIT\",\n                                    \"txnType\": \"TRANSFER\",\n                                    \"amount\": 3450,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T10:00:00Z\",\n                                    \"description\": \"TRANSFER transaction T49 on ACC1010\"\n                                },\n                                {\n                                    \"txnId\": \"T50\",\n                                    \"direction\": \"DEBIT\",\n                                    \"txnType\": \"POS\",\n                                    \"amount\": 3500,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T11:00:00Z\",\n                                    \"description\": \"POS transaction T50 on ACC1010\"\n                                }\n                            ],\n                            \"children\": [],\n                            \"root\": false,\n                            \"leaf\": true\n                        },\n                        {\n                            \"id\": \"N11\",\n                            \"name\": \"Node 11\",\n                            \"accountNumber\": \"ACC1011\",\n                            \"level\": 3,\n                            \"transactions\": [\n                                {\n                                    \"txnId\": \"T51\",\n                                    \"direction\": \"CREDIT\",\n                                    \"txnType\": \"ATM\",\n                                    \"amount\": 3550,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T12:00:00Z\",\n                                    \"description\": \"ATM transaction T51 on ACC1011\"\n                                },\n                                {\n                                    \"txnId\": \"T52\",\n                                    \"direction\": \"DEBIT\",\n                                    \"txnType\": \"SALARY\",\n                                    \"amount\": 3600,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T13:00:00Z\",\n                                    \"description\": \"SALARY transaction T52 on ACC1011\"\n                                },\n                                {\n                                    \"txnId\": \"T53\",\n                                    \"direction\": \"CREDIT\",\n                                    \"txnType\": \"TRANSFER\",\n                                    \"amount\": 3650,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T14:00:00Z\",\n                                    \"description\": \"TRANSFER transaction T53 on ACC1011\"\n                                },\n                                {\n                                    \"txnId\": \"T54\",\n                                    \"direction\": \"DEBIT\",\n                                    \"txnType\": \"POS\",\n                                    \"amount\": 3700,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T15:00:00Z\",\n                                    \"description\": \"POS transaction T54 on ACC1011\"\n                                },\n                                {\n                                    \"txnId\": \"T55\",\n                                    \"direction\": \"CREDIT\",\n                                    \"txnType\": \"ATM\",\n                                    \"amount\": 3750,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T16:00:00Z\",\n                                    \"description\": \"ATM transaction T55 on ACC1011\"\n                                }\n                            ],\n                            \"children\": [],\n                            \"root\": false,\n                            \"leaf\": true\n                        }\n                    ],\n                    \"root\": false,\n                    \"leaf\": false\n                }\n            ],\n            \"root\": false,\n            \"leaf\": false\n        },\n        {\n            \"id\": \"N3\",\n            \"name\": \"Node 3\",\n            \"accountNumber\": \"ACC1003\",\n            \"level\": 1,\n            \"transactions\": [\n                {\n                    \"txnId\": \"T11\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1550,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T20:00:00Z\",\n                    \"description\": \"ATM transaction T11 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T12\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"SALARY\",\n                    \"amount\": 1600,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T21:00:00Z\",\n                    \"description\": \"SALARY transaction T12 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T13\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"TRANSFER\",\n                    \"amount\": 1650,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T22:00:00Z\",\n                    \"description\": \"TRANSFER transaction T13 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T14\",\n                    \"direction\": \"DEBIT\",\n                    \"txnType\": \"POS\",\n                    \"amount\": 1700,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-01T23:00:00Z\",\n                    \"description\": \"POS transaction T14 on ACC1003\"\n                },\n                {\n                    \"txnId\": \"T15\",\n                    \"direction\": \"CREDIT\",\n                    \"txnType\": \"ATM\",\n                    \"amount\": 1750,\n                    \"currency\": \"INR\",\n                    \"timestamp\": \"2025-01-02T00:00:00Z\",\n                    \"description\": \"ATM transaction T15 on ACC1003\"\n                }\n            ],\n            \"children\": [\n                {\n                    \"id\": \"N6\",\n                    \"name\": \"Node 6\",\n                    \"accountNumber\": \"ACC1006\",\n                    \"level\": 2,\n                    \"transactions\": [\n                        {\n                            \"txnId\": \"T26\",\n                            \"direction\": \"DEBIT\",\n                            \"txnType\": \"POS\",\n                            \"amount\": 2300,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T11:00:00Z\",\n                            \"description\": \"POS transaction T26 on ACC1006\"\n                        },\n                        {\n                            \"txnId\": \"T27\",\n                            \"direction\": \"CREDIT\",\n                            \"txnType\": \"ATM\",\n                            \"amount\": 2350,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T12:00:00Z\",\n                            \"description\": \"ATM transaction T27 on ACC1006\"\n                        },\n                        {\n                            \"txnId\": \"T28\",\n                            \"direction\": \"DEBIT\",\n                            \"txnType\": \"SALARY\",\n                            \"amount\": 2400,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T13:00:00Z\",\n                            \"description\": \"SALARY transaction T28 on ACC1006\"\n                        },\n                        {\n                            \"txnId\": \"T29\",\n                            \"direction\": \"CREDIT\",\n                            \"txnType\": \"TRANSFER\",\n                            \"amount\": 2450,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T14:00:00Z\",\n                            \"description\": \"TRANSFER transaction T29 on ACC1006\"\n                        },\n                        {\n                            \"txnId\": \"T30\",\n                            \"direction\": \"DEBIT\",\n                            \"txnType\": \"POS\",\n                            \"amount\": 2500,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T15:00:00Z\",\n                            \"description\": \"POS transaction T30 on ACC1006\"\n                        }\n                    ],\n                    \"children\": [\n                        {\n                            \"id\": \"N12\",\n                            \"name\": \"Node 12\",\n                            \"accountNumber\": \"ACC1012\",\n                            \"level\": 3,\n                            \"transactions\": [\n                                {\n                                    \"txnId\": \"T56\",\n                                    \"direction\": \"DEBIT\",\n                                    \"txnType\": \"SALARY\",\n                                    \"amount\": 3800,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T17:00:00Z\",\n                                    \"description\": \"SALARY transaction T56 on ACC1012\"\n                                },\n                                {\n                                    \"txnId\": \"T57\",\n                                    \"direction\": \"CREDIT\",\n                                    \"txnType\": \"TRANSFER\",\n                                    \"amount\": 3850,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T18:00:00Z\",\n                                    \"description\": \"TRANSFER transaction T57 on ACC1012\"\n                                },\n                                {\n                                    \"txnId\": \"T58\",\n                                    \"direction\": \"DEBIT\",\n                                    \"txnType\": \"POS\",\n                                    \"amount\": 3900,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T19:00:00Z\",\n                                    \"description\": \"POS transaction T58 on ACC1012\"\n                                },\n                                {\n                                    \"txnId\": \"T59\",\n                                    \"direction\": \"CREDIT\",\n                                    \"txnType\": \"ATM\",\n                                    \"amount\": 3950,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T20:00:00Z\",\n                                    \"description\": \"ATM transaction T59 on ACC1012\"\n                                },\n                                {\n                                    \"txnId\": \"T60\",\n                                    \"direction\": \"DEBIT\",\n                                    \"txnType\": \"SALARY\",\n                                    \"amount\": 4000,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T21:00:00Z\",\n                                    \"description\": \"SALARY transaction T60 on ACC1012\"\n                                }\n                            ],\n                            \"children\": [],\n                            \"root\": false,\n                            \"leaf\": true\n                        }\n                    ],\n                    \"root\": false,\n                    \"leaf\": false\n                },\n                {\n                    \"id\": \"N7\",\n                    \"name\": \"Node 7\",\n                    \"accountNumber\": \"ACC1007\",\n                    \"level\": 2,\n                    \"transactions\": [\n                        {\n                            \"txnId\": \"T31\",\n                            \"direction\": \"CREDIT\",\n                            \"txnType\": \"ATM\",\n                            \"amount\": 2550,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T16:00:00Z\",\n                            \"description\": \"ATM transaction T31 on ACC1007\"\n                        },\n                        {\n                            \"txnId\": \"T32\",\n                            \"direction\": \"DEBIT\",\n                            \"txnType\": \"SALARY\",\n                            \"amount\": 2600,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T17:00:00Z\",\n                            \"description\": \"SALARY transaction T32 on ACC1007\"\n                        },\n                        {\n                            \"txnId\": \"T33\",\n                            \"direction\": \"CREDIT\",\n                            \"txnType\": \"TRANSFER\",\n                            \"amount\": 2650,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T18:00:00Z\",\n                            \"description\": \"TRANSFER transaction T33 on ACC1007\"\n                        },\n                        {\n                            \"txnId\": \"T34\",\n                            \"direction\": \"DEBIT\",\n                            \"txnType\": \"POS\",\n                            \"amount\": 2700,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T19:00:00Z\",\n                            \"description\": \"POS transaction T34 on ACC1007\"\n                        },\n                        {\n                            \"txnId\": \"T35\",\n                            \"direction\": \"CREDIT\",\n                            \"txnType\": \"ATM\",\n                            \"amount\": 2750,\n                            \"currency\": \"INR\",\n                            \"timestamp\": \"2025-01-02T20:00:00Z\",\n                            \"description\": \"ATM transaction T35 on ACC1007\"\n                        }\n                    ],\n                    \"children\": [\n                        {\n                            \"id\": \"N13\",\n                            \"name\": \"Node 13\",\n                            \"accountNumber\": \"ACC1013\",\n                            \"level\": 3,\n                            \"transactions\": [\n                                {\n                                    \"txnId\": \"T61\",\n                                    \"direction\": \"CREDIT\",\n                                    \"txnType\": \"TRANSFER\",\n                                    \"amount\": 4050,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T22:00:00Z\",\n                                    \"description\": \"TRANSFER transaction T61 on ACC1013\"\n                                },\n                                {\n                                    \"txnId\": \"T62\",\n                                    \"direction\": \"DEBIT\",\n                                    \"txnType\": \"POS\",\n                                    \"amount\": 4100,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-03T23:00:00Z\",\n                                    \"description\": \"POS transaction T62 on ACC1013\"\n                                },\n                                {\n                                    \"txnId\": \"T63\",\n                                    \"direction\": \"CREDIT\",\n                                    \"txnType\": \"ATM\",\n                                    \"amount\": 4150,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-04T00:00:00Z\",\n                                    \"description\": \"ATM transaction T63 on ACC1013\"\n                                },\n                                {\n                                    \"txnId\": \"T64\",\n                                    \"direction\": \"DEBIT\",\n                                    \"txnType\": \"SALARY\",\n                                    \"amount\": 4200,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-04T01:00:00Z\",\n                                    \"description\": \"SALARY transaction T64 on ACC1013\"\n                                },\n                                {\n                                    \"txnId\": \"T65\",\n                                    \"direction\": \"CREDIT\",\n                                    \"txnType\": \"TRANSFER\",\n                                    \"amount\": 4250,\n                                    \"currency\": \"INR\",\n                                    \"timestamp\": \"2025-01-04T02:00:00Z\",\n                                    \"description\": \"TRANSFER transaction T65 on ACC1013\"\n                                }\n                            ],\n                            \"children\": [],\n                            \"root\": false,\n                            \"leaf\": true\n                        }\n                    ],\n                    \"root\": false,\n                    \"leaf\": false\n                }\n            ],\n            \"root\": false,\n            \"leaf\": false\n        }\n    ],\n    \"root\": true,\n    \"leaf\": false\n}"
+            }
+          ]
+        },
+        {
+          "name": "Orphan Node (Missing Parent)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Node N19 is treated as a Pseudo-Root\", () => {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.level).to.eql(0);\r",
+                  "    pm.expect(jsonData.root).to.be.true;\r",
+                  "    pm.expect(jsonData.parentChain).to.have.lengthOf(0);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/graph/nodes/N19",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "graph",
+                "nodes",
+                "N19"
+              ]
+            },
+            "description": "StartFragment\n\n- **Description:** Verifies that a node with a missing parent is treated as Level 0.\n    \n\nEndFragment"
+          },
+          "response": [
+            {
+              "name": "Orphan Node (Missing Parent)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/graph/nodes/N19",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "graph",
+                    "nodes",
+                    "N19"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 21 Apr 2026 09:57:11 GMT"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"id\": \"N19\",\n    \"parentId\": \"N99\",\n    \"name\": \"Node 19\",\n    \"accountNumber\": \"ACC1019\",\n    \"level\": 0,\n    \"parentChain\": [],\n    \"directChildren\": [],\n    \"transactions\": [\n        {\n            \"txnId\": \"T91\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"ATM\",\n            \"amount\": 5550,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-05T04:00:00Z\",\n            \"description\": \"ATM transaction T91 on ACC1019\"\n        },\n        {\n            \"txnId\": \"T92\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"SALARY\",\n            \"amount\": 5600,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-05T05:00:00Z\",\n            \"description\": \"SALARY transaction T92 on ACC1019\"\n        },\n        {\n            \"txnId\": \"T93\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"TRANSFER\",\n            \"amount\": 5650,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-05T06:00:00Z\",\n            \"description\": \"TRANSFER transaction T93 on ACC1019\"\n        },\n        {\n            \"txnId\": \"T94\",\n            \"direction\": \"DEBIT\",\n            \"txnType\": \"POS\",\n            \"amount\": 5700,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-05T07:00:00Z\",\n            \"description\": \"POS transaction T94 on ACC1019\"\n        },\n        {\n            \"txnId\": \"T95\",\n            \"direction\": \"CREDIT\",\n            \"txnType\": \"ATM\",\n            \"amount\": 5750,\n            \"currency\": \"INR\",\n            \"timestamp\": \"2025-01-05T08:00:00Z\",\n            \"description\": \"ATM transaction T95 on ACC1019\"\n        }\n    ],\n    \"nextLevelTransactions\": [],\n    \"children\": [],\n    \"root\": true,\n    \"leaf\": true\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Transaction Filtering (Requirement 5.4)",
+      "item": [
+        {
+          "name": "Filter by Amount Range",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response is valid JSON\", function () {\r",
+                  "    pm.response.to.be.withBody;\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "pm.test(\"Transactions are within amount range\", () => {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    jsonData.forEach(txn => {\r",
+                  "        pm.expect(txn.amount).to.be.at.least(100);\r",
+                  "        pm.expect(txn.amount).to.be.at.most(2000);\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/graph/nodes/N1/children-transactions?minAmount=100&maxAmount=2000",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "graph",
+                "nodes",
+                "N1",
+                "children-transactions"
+              ],
+              "query": [
+                {
+                  "key": "minAmount",
+                  "value": "100"
+                },
+                {
+                  "key": "maxAmount",
+                  "value": "2000"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Min-Max",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/graph/nodes/N1/children-transactions?minAmount=100&maxAmount=1000",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "graph",
+                    "nodes",
+                    "N1",
+                    "children-transactions"
+                  ],
+                  "query": [
+                    {
+                      "key": "minAmount",
+                      "value": "100"
+                    },
+                    {
+                      "key": "maxAmount",
+                      "value": "1000"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 21 Apr 2026 10:02:11 GMT"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "[]"
+            }
+          ]
+        },
+        {
+          "name": "Filter by Type (SALARY)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"All transactions are of type SALARY\", () => {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    jsonData.forEach(txn => {\r",
+                  "        pm.expect(txn.txnType).to.eql(\"SALARY\");\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/graph/nodes/N1/children-transactions?txnType=SALARY",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "graph",
+                "nodes",
+                "N1",
+                "children-transactions"
+              ],
+              "query": [
+                {
+                  "key": "txnType",
+                  "value": "SALARY"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Filter by Type (SALARY)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/graph/nodes/N1/children-transactions?txnType=SALARY",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "graph",
+                    "nodes",
+                    "N1",
+                    "children-transactions"
+                  ],
+                  "query": [
+                    {
+                      "key": "txnType",
+                      "value": "SALARY"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 21 Apr 2026 10:36:32 GMT"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n    {\n        \"txnId\": \"T8\",\n        \"direction\": \"DEBIT\",\n        \"txnType\": \"SALARY\",\n        \"amount\": 1400,\n        \"currency\": \"INR\",\n        \"timestamp\": \"2025-01-01T17:00:00Z\",\n        \"description\": \"SALARY transaction T8 on ACC1002\"\n    },\n    {\n        \"txnId\": \"T12\",\n        \"direction\": \"DEBIT\",\n        \"txnType\": \"SALARY\",\n        \"amount\": 1600,\n        \"currency\": \"INR\",\n        \"timestamp\": \"2025-01-01T21:00:00Z\",\n        \"description\": \"SALARY transaction T12 on ACC1003\"\n    }\n]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Error Handling & Edge Cases",
+      "item": [
+        {
+          "name": "404 - Node Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Correctly returns 404 for missing node\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error message is descriptive\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error).to.eql(\"NODE_NOT_FOUND\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/graph/nodes/NON_EXISTENT_ID",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "graph",
+                "nodes",
+                "NON_EXISTENT_ID"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "404 - Node Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/graph/nodes/NON_EXISTENT_ID",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "graph",
+                    "nodes",
+                    "NON_EXISTENT_ID"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 21 Apr 2026 13:36:21 GMT"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"timestamp\": \"2026-04-21T19:06:21.2666883\",\n    \"message\": \"Node with ID 'NON_EXISTENT_ID' was not found in the system.\",\n    \"error\": \"NODE_NOT_FOUND\",\n    \"status\": 404\n}"
+            }
+          ]
+        },
+        {
+          "name": "400 - Cycle Detected",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/graph/nodes/N18",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "graph",
+                "nodes",
+                "N18"
+              ]
+            },
+            "description": "# **StartFragment**\n\n# **no nodes that currently form a cycle**\n\n# **EndFragment**"
+          },
+          "response": []
+        },
+        {
+          "name": "400 - Invalid Depth Range",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Returns 400 for negative or invalid depth\", () => {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "    pm.expect(pm.response.json().message).to.include(\"maxDepth\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/graph/nodes/N1?maxDepth=10",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "graph",
+                "nodes",
+                "N1"
+              ],
+              "query": [
+                {
+                  "key": "maxDepth",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "400 - Invalid Depth Range",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/graph/nodes/N1?maxDepth=10",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "graph",
+                    "nodes",
+                    "N1"
+                  ],
+                  "query": [
+                    {
+                      "key": "maxDepth",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 21 Apr 2026 11:26:44 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"timestamp\": \"2026-04-21T16:56:44.0942314\",\n    \"message\": \"maxDepth must be between 0 and 5.\",\n    \"error\": \"INVALID_ARGUMENT\",\n    \"status\": 400\n}"
+            }
+          ]
+        },
+        {
+          "name": "400 - Type Mismatch (String in Amount)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", () => {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error indicates type mismatch\", () => {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    // Adjust the string \"TYPE_MISMATCH\" to match your actual error code\r",
+                  "    pm.expect(jsonData.error).to.eql(\"TYPE_MISMATCH\");\r",
+                  "    pm.expect(jsonData.message).to.include(\"minAmount\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/graph/nodes/N1/children-transactions?minAmount=abc",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "graph",
+                "nodes",
+                "N1",
+                "children-transactions"
+              ],
+              "query": [
+                {
+                  "key": "minAmount",
+                  "value": "abc"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "400 - Type Mismatch (String in Amount)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/graph/nodes/N1/children-transactions?minAmount=abc",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "graph",
+                    "nodes",
+                    "N1",
+                    "children-transactions"
+                  ],
+                  "query": [
+                    {
+                      "key": "minAmount",
+                      "value": "abc"
+                    }
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 21 Apr 2026 11:34:08 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "close"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"timestamp\": \"2026-04-21T17:04:08.6825642\",\n    \"message\": \"Parameter 'minAmount' expects type 'Double'.\",\n    \"error\": \"TYPE_MISMATCH\",\n    \"status\": 400\n}"
+            }
+          ]
+        },
+        {
+          "name": "404 - Invalid URL Endpoint",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", () => {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Error indicates invalid URL\", () => {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error).to.eql(\"INVALID_URL\");\r",
+                  "    pm.expect(jsonData.status).to.eql(404);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/graph/invalid-path",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "graph",
+                "invalid-path"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "404 - Invalid URL Endpoint",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8080/api/graph/invalid-path",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8080",
+                  "path": [
+                    "api",
+                    "graph",
+                    "invalid-path"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Transfer-Encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "Date",
+                  "value": "Tue, 21 Apr 2026 13:37:50 GMT"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=60"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"timestamp\": \"2026-04-21T19:07:50.4409678\",\n    \"message\": \"The requested URL does not exist.\",\n    \"error\": \"INVALID_URL\",\n    \"status\": 404\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}
