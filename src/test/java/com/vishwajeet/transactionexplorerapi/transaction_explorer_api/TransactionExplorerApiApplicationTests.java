@@ -8,6 +8,6 @@ class TransactionExplorerApiApplicationTests {
 
 	@Test
 	void contextLoads() {
+		// This test will pass if the Spring application context starts up correctly.
 	}
-
 }
